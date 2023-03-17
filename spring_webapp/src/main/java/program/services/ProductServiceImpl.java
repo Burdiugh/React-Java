@@ -135,4 +135,21 @@ public class ProductServiceImpl implements ProductService {
         }
         return null;
     }
+
+    @Override
+    public void delete(int id) throws Exception {
+        var productOptinal = productRepository.findById(id);
+        if(productOptinal.isPresent()){
+            var product = productOptinal.get();
+            for(var img : product.getProductImages()){
+                if (img!=null && img.getName()!=""){
+                    var smt = 0;
+                }
+                storageService.delete(img.getName());
+            }
+            productRepository.delete(product);
+        }
+    }
+
+
 }

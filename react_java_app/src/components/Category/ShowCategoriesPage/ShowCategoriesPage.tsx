@@ -2,6 +2,7 @@ import axios from "axios";
 import exp from "constants";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import ModalDelete from "../../Common/Modal/delete";
 
 export interface ICategory {
   id: number;
@@ -52,14 +53,18 @@ const ShowCategoriesPage = () => {
           />
         </Link>
       </div>
-      <h3 className="mt-6 text-sm text-gray-500">{item.description}..</h3>
-      <p className="text-base font-semibold text-gray-900">{item.name}</p>
-      <button
-        className="bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent rounded"
-        onClick={() => handleDelete(item.id)}
-      >
-        Remove
-      </button>
+      <div className="flex">
+        <div className="flex-auto w-64">
+          <h3 className="mt-6 text-sm text-gray-500">{item.description}..</h3>
+          <p className="text-base font-semibold text-gray-900">{item.name}</p>
+        </div>
+        <ModalDelete
+          id={item.id}
+          deleteFunc={handleDelete}
+          title="Removing category"
+          text={`Are you sure about removing product called '${item.name}'`}
+        ></ModalDelete>
+      </div>
     </div>
   ));
 

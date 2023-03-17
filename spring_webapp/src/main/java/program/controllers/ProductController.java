@@ -47,5 +47,15 @@ public class ProductController {
         return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
+  @DeleteMapping("{id}")
+    public ResponseEntity<ProductItemDTO> delete(@PathVariable("id") int id) throws Exception {
+       var product =  productService.getById(id);
+        if(product!=null){
+            productService.delete(id);
+            return new ResponseEntity<>(null, HttpStatus.OK);
+        }
+      return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+  }
+
 
 }

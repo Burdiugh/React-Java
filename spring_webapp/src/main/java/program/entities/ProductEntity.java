@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -33,5 +34,5 @@ public class ProductEntity {
     private CategoryEntity category;
 
     @OneToMany(mappedBy="product")
-    private List<ProductImageEntity> productImages;
+    private List<ProductImageEntity> productImages = new ArrayList<>();
 }

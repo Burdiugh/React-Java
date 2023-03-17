@@ -1,11 +1,14 @@
 import axios from "axios";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { IPorductCreate, IProductItem } from "../types";
 import { APP_ENV } from "../../../env";
+import { ICategory } from "../../Category/ShowCategoriesPage/ShowCategoriesPage";
 
 const ProductCreatePage = () => {
   const navigator = useNavigate();
+
+  const [categories, setCategories] = useState<Array<ICategory>>([]);
 
   const [model, setModel] = useState<IPorductCreate>({
     name: "",
@@ -14,6 +17,16 @@ const ProductCreatePage = () => {
     price: 0,
     category_id: 1,
   });
+
+  const content = categories.map((category) => (
+    <option key={category.id} value={category.id}>
+      {category.name}
+    </option>
+  ));
+
+  const onChangeSelectHandler = (e: ChangeEvent<HTMLSelectElement>) => {
+    setModel({ ...model, [e.target.name]: e.target.value });
+  };
 
   const onChangeHandler = (
     e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>
@@ -49,6 +62,15 @@ const ProductCreatePage = () => {
   const filesContent = model.files.map((f, index) => (
     <img key={index} src={URL.createObjectURL(f)} />
   ));
+
+  useEffect(() => {
+    axios
+      .get<Array<ICategory>>(`http://localhost:8082/api/categories`)
+      .then((resp) => {
+        console.log("resp = ", resp);
+        setCategories(resp.data);
+      });
+  }, []);
 
   return (
     <div className="p-8 rounded border border-gray-200">
@@ -98,15 +120,15 @@ const ProductCreatePage = () => {
             >
               Категорія
             </label>
-            <input
-              type="text"
-              name="category_id"
-              value={model.category_id}
-              onChange={onChangeHandler}
+            <select
+              onChange={onChangeSelectHandler}
               id="category_id"
-              className="bg-gray-100 border border-gray-200 rounded py-1 px-3 block focus:ring-blue-500 focus:border-blue-500 text-gray-700 w-full"
-              placeholder="Вкажіть id категорії"
-            />
+              name="category_id"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            >
+              <option selected>Виберіть категорію</option>
+              {content}
+            </select>
           </div>
 
           <div>

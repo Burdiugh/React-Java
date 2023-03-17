@@ -12,5 +12,6 @@ public interface ProductService {
     ProductItemDTO edit(int id, ProductEditDTO model) throws Exception;
     List<ProductItemDTO> get();
     ProductItemDTO getById(int id);
+    void delete(int id) throws Exception;
 }
 
