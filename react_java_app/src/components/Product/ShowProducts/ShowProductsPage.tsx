@@ -17,11 +17,11 @@ const ShowProductsPage = () => {
 
   const [load, setLoad] = useState(false);
 
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: number | string | undefined) => {
     axios
       .delete(`http://localhost:8082/api/products/${id}`)
       .then((response) => {
-        // do something with the response, like updating state or triggering a re-render
+        setData(data.filter((x) => x.id !== id));
       })
       .catch((error) => console.log(error));
   };
@@ -34,7 +34,7 @@ const ShowProductsPage = () => {
         setData(response.data);
         setTimeout(() => {
           setLoad(false);
-        }, 5000);
+        }, 500);
       })
       .catch((error) => console.log(error));
   }, []);
@@ -44,14 +44,16 @@ const ShowProductsPage = () => {
       <div className="relative h-80 w-full overflow-hidden rounded-lg bg-white group-hover:opacity-75 sm:aspect-w-2 sm:aspect-h-1 sm:h-64 lg:aspect-w-1 lg:aspect-h-1">
         <Link
           //style={LinkStyle}
-          to={`/product?productId=${item.id}`}
+          to={`/product/view/${item.id}`}
           className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white  rounded-lg  focus:ring-4 focus:outline-none "
         >
-          <img
-            src={"http://localhost:8082/api/home/files/600_" + item.files}
-            alt="image"
-            className="h-full w-full object-cover object-center"
-          />
+          <div className="picture-main">
+            <img
+              src={"http://localhost:8082/api/home/files/600_" + item.files[0]}
+              alt="image"
+              className="picture-container"
+            />
+          </div>
         </Link>
       </div>
       <div className="flex ">
@@ -62,6 +64,13 @@ const ShowProductsPage = () => {
             {item.category}
           </p>
         </div>
+        <Link
+          to={`/product/edit/${item.id}`}
+          type="button"
+          className="bg-transparent pt-5 mt-6 mr-3 hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+        >
+          Update
+        </Link>
         <ModalDelete
           id={item.id}
           deleteFunc={handleDelete}

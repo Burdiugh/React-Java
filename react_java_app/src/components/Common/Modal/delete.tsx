@@ -3,10 +3,10 @@ import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { Fragment, useRef, useState } from "react";
 
 interface Props {
-  id: number;
+  id: number | string | undefined;
   title: string;
   text: string;
-  deleteFunc: (id: number) => void;
+  deleteFunc: (id: number | string | undefined) => void;
 }
 
 const ModalDelete: React.FC<Props> = ({ id, title, text, deleteFunc }) => {

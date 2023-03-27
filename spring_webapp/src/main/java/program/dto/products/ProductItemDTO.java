@@ -12,5 +12,8 @@ public class ProductItemDTO {
     private double price;
     private String description;
     private String category;
+    private int category_id;
+
+
     private List<String> files = new ArrayList<>();
 }

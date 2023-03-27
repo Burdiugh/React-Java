@@ -2,6 +2,7 @@ import axios from "axios";
 import exp from "constants";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import EclipseWidget from "../../Common/Eclipse";
 import ModalDelete from "../../Common/Modal/delete";
 
 export interface ICategory {
@@ -22,21 +23,29 @@ const ContainerStyle = {
 const ShowCategoriesPage = () => {
   const [data, setData] = useState<ICategory[]>([]);
 
-  const handleDelete = (id: number) => {
+  const [load, setLoad] = useState(false);
+
+  const handleDelete = (id: number | string | undefined) => {
     axios
       .delete(`http://localhost:8082/api/categories/${id}`)
       .then((response) => {
-        // do something with the response, like updating state or triggering a re-render
+        setData(data.filter((x) => x.id !== id));
       })
       .catch((error) => console.log(error));
   };
 
   useEffect(() => {
+    setLoad(true);
     axios
       .get("http://localhost:8082/api/categories")
-      .then((response) => setData(response.data))
+      .then((response) => {
+        setData(response.data);
+        setTimeout(() => {
+          setLoad(false);
+        }, 500);
+      })
       .catch((error) => console.log(error));
-  }, [handleDelete]);
+  }, []);
 
   const content = data.map((item) => (
     <div key={item.id} className="group relative">
@@ -81,6 +90,8 @@ const ShowCategoriesPage = () => {
           </div>
         </div>
       </div>
+
+      {load && <EclipseWidget></EclipseWidget>}
     </>
   );
 };
