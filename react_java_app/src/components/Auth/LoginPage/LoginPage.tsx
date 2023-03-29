@@ -6,6 +6,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { ILogin } from "../types";
 import * as Yup from "yup";
 import axios from "axios";
+import setAuthToken from "../../../helpers/setAuthToken";
+import http_common from "../../../http_common";
 
 const LoginPage = () => {
   const validationSchema = Yup.object().shape({
@@ -22,12 +24,15 @@ const LoginPage = () => {
   const onSubmitLogin = (values: ILogin) => {
     console.log("login values:", values);
 
-    axios
-      .post("http://localhost:8082/api/account/login", values)
+    http_common
+      .post("api/account/login", values)
       .then((data) => {
         var token = data.data.token;
         if (token) {
           console.log("token", token);
+          // axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+          setAuthToken(token);
+
           localStorage.setItem("token", token);
           navigate("/");
         }
@@ -87,7 +92,7 @@ const LoginPage = () => {
                   <Field
                     id="password"
                     name="password"
-                    type="text"
+                    type="password"
                     className="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full"
                   />
                   <ErrorMessage name="password" />

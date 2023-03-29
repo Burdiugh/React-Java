@@ -293,9 +293,9 @@ const DefaultHeader = () => {
                       <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
                         <div className="relative grid gap-6 bg-white px-5 py-6 sm:gap-8 sm:p-8">
                           {resourcesProducts.map((item) => (
-                            <a
+                            <Link
                               key={item.name}
-                              href={item.href}
+                              to={item.href}
                               className="-m-3 flex items-start rounded-lg p-3 hover:bg-gray-50"
                             >
                               <item.icon
@@ -310,7 +310,7 @@ const DefaultHeader = () => {
                                   {item.description}
                                 </p>
                               </div>
-                            </a>
+                            </Link>
                           ))}
                         </div>
                       </div>
