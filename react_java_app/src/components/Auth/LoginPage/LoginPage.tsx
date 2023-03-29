@@ -5,6 +5,7 @@ import { Form, Field, ErrorMessage, useFormik, FormikProvider } from "formik";
 import { Link, useNavigate } from "react-router-dom";
 import { ILogin } from "../types";
 import * as Yup from "yup";
+import axios from "axios";
 
 const LoginPage = () => {
   const validationSchema = Yup.object().shape({
@@ -20,6 +21,20 @@ const LoginPage = () => {
 
   const onSubmitLogin = (values: ILogin) => {
     console.log("login values:", values);
+
+    axios
+      .post("http://localhost:8082/api/account/login", values)
+      .then((data) => {
+        var token = data.data.token;
+        if (token) {
+          console.log("token", token);
+          localStorage.setItem("token", token);
+          navigate("/");
+        }
+      })
+      .catch((errors) => {
+        console.log("Register errors", errors);
+      });
   };
 
   const initialValues: ILogin = {

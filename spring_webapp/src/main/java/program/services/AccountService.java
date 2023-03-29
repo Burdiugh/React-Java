@@ -30,10 +30,10 @@ public class AccountService {
 
     public AuthResponseDTO register(RegisterDTO request) {
         var user = UserEntity.builder()
-                .firstName(request.getFirstname())
-                .lastName(request.getLastname())
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
                 .email(request.getEmail())
-                .phone("093 839 43 23")
+                .phone("")
                 .password(passwordEncoder.encode(request.getPassword()))
                 .build();
         repository.save(user);

@@ -1,5 +1,6 @@
+import axios, { AxiosResponse } from "axios";
 import { Field, FormikProvider, Form, useFormik, ErrorMessage } from "formik";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { IRegister } from "../types";
 
@@ -11,8 +12,24 @@ const initialValues: IRegister = {
 };
 
 const RegisterPage = () => {
+  const navigate = useNavigate();
+
   const onSubmit = (values: IRegister) => {
-    console.log("Register values:", values);
+    console.log("Register values: ", values);
+
+    axios
+      .post("http://localhost:8082/api/account/register", values)
+      .then((data) => {
+        var token = data.data.token;
+        if (token) {
+          console.log("token", token);
+          localStorage.setItem("token", token);
+          navigate("/");
+        }
+      })
+      .catch((errors) => {
+        console.log("Register errors", errors);
+      });
   };
 
   const validationSchema = Yup.object().shape({

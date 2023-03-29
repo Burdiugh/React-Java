@@ -35,9 +35,9 @@ public class SecurityConfiguration {
                 .requestMatchers("/webjars/**").permitAll()
                 .requestMatchers("/rest-api-docs/**").permitAll()
                 .requestMatchers("/swagger-ui/**").permitAll()
-                .requestMatchers("/api/categories/**").permitAll()
-//                .requestMatchers("/api/products/**").hasAuthority(Roles.Admin) // only admin has permission
-                .requestMatchers("/api/products/**").permitAll()
+                .requestMatchers("/api/categories").permitAll()
+                .requestMatchers("/api/products/**").hasAuthority(Roles.Admin)
+               // .requestMatchers("/api/products/**").permitAll()
                 .anyRequest().authenticated()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()

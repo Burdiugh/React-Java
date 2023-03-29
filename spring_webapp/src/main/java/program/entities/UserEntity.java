@@ -38,6 +38,6 @@ public class UserEntity  {
     @OneToMany(mappedBy = "user")
     private List<UserRoleEntity> userRoles = new ArrayList<>();
 
-    //Повертаємо список ролей користувача
+
 
 }
