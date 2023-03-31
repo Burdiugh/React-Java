@@ -2,6 +2,7 @@ import axios, { AxiosResponse } from "axios";
 import { Formik, Form, Field, useFormik, FormikProvider } from "formik";
 import { ChangeEvent, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import http from "../../../http_common";
 
 export interface ICategory {
   id: number;
@@ -27,10 +28,7 @@ const ShowCategoryPage = () => {
   const updateItemInDb = (
     item: IUpdateCategoryDTO
   ): Promise<AxiosResponse<IUpdateCategoryDTO>> => {
-    return axios.put(
-      "http://localhost:8082/api/categories/update/" + categoryId,
-      item
-    );
+    return http.put("api/categories/update/" + categoryId, item);
   };
 
   const initialValues: IUpdateCategoryDTO = {
@@ -79,8 +77,8 @@ const ShowCategoryPage = () => {
     formik;
 
   useEffect(() => {
-    axios
-      .get("http://localhost:8082/api/categories/" + categoryId)
+    http
+      .get("api/categories/" + categoryId)
       .then((response) => {
         console.log("data", response.data);
 

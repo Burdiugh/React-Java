@@ -1,7 +1,6 @@
-import axios from "axios";
-import exp from "constants";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import http from "../../../http_common";
 import EclipseWidget from "../../Common/Eclipse";
 import ModalDelete from "../../Common/Modal/delete";
 
@@ -26,8 +25,8 @@ const ShowCategoriesPage = () => {
   const [load, setLoad] = useState(false);
 
   const handleDelete = (id: number | string | undefined) => {
-    axios
-      .delete(`http://localhost:8082/api/categories/${id}`)
+    http
+      .delete(`api/categories/${id}`)
       .then((response) => {
         setData(data.filter((x) => x.id !== id));
       })
@@ -36,8 +35,8 @@ const ShowCategoriesPage = () => {
 
   useEffect(() => {
     setLoad(true);
-    axios
-      .get("http://localhost:8082/api/categories")
+    http
+      .get("api/categories")
       .then((response) => {
         setData(response.data);
         setTimeout(() => {

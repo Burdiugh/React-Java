@@ -1,9 +1,9 @@
-import axios from "axios";
 import { ChangeEvent, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { IPorductCreate, IProductItem } from "../types";
-import { APP_ENV } from "../../../env";
+
 import { ICategory } from "../../Category/ShowCategoriesPage/ShowCategoriesPage";
+import http from "../../../http_common";
 
 const ProductCreatePage = () => {
   const navigator = useNavigate();
@@ -47,13 +47,9 @@ const ProductCreatePage = () => {
     e.preventDefault();
     try {
       // console.log("Send Server form", model);
-      const result = await axios.post<IProductItem>(
-        `http://localhost:8082/api/products`,
-        model,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
+      const result = await http.post<IProductItem>(`api/products`, model, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
       console.log("Result ", result);
       navigator("/products");
     } catch (error: any) {}
@@ -64,12 +60,10 @@ const ProductCreatePage = () => {
   ));
 
   useEffect(() => {
-    axios
-      .get<Array<ICategory>>(`http://localhost:8082/api/categories`)
-      .then((resp) => {
-        console.log("resp = ", resp);
-        setCategories(resp.data);
-      });
+    http.get<Array<ICategory>>(`api/categories`).then((resp) => {
+      console.log("resp = ", resp);
+      setCategories(resp.data);
+    });
   }, []);
 
   return (

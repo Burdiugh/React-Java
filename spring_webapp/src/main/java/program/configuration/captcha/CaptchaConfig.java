@@ -1,4 +1,4 @@
-package program.captcha;
+package program.configuration.captcha;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

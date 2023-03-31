@@ -1,5 +1,9 @@
 package program.services;
 
+import org.springframework.web.client.RestOperations;
+import program.configuration.captcha.GoogleResponse;
+import program.configuration.captcha.CaptchaSettings;
+
 import program.dto.account.LoginDTO;
 import program.dto.account.AuthResponseDTO;
 import program.dto.account.RegisterDTO;
@@ -28,7 +32,19 @@ public class AccountService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
+    private final CaptchaSettings captchaSettings;
+    private final RestOperations restTemplate;
+    protected static final String RECAPTCHA_URL_TEMPLATE = "https://www.google.com/recaptcha/api/siteverify?secret=%s&response=%s";
+
     public AuthResponseDTO register(RegisterDTO request) {
+
+        String url = String.format(RECAPTCHA_URL_TEMPLATE, captchaSettings.getSecret(), request.getReCaptchaToken());
+        final GoogleResponse googleResponse = restTemplate.getForObject(url, GoogleResponse.class);
+        if (!googleResponse.isSuccess()) {   //перевіряємо чи запит успішний
+            //throw new Exception("reCaptcha was not successfully validated");
+            return null;
+        }
+
         var user = UserEntity.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
@@ -51,6 +67,13 @@ public class AccountService {
     }
 
     public AuthResponseDTO login(LoginDTO request) {
+
+        String url = String.format(RECAPTCHA_URL_TEMPLATE, captchaSettings.getSecret(), request.getReCaptchaToken());
+        final GoogleResponse googleResponse = restTemplate.getForObject(url, GoogleResponse.class);
+        if (!googleResponse.isSuccess()) {   //перевіряємо чи запит успішний
+            //throw new Exception("reCaptcha was not successfully validated");
+            return null;
+        }
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),

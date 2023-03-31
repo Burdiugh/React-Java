@@ -1,4 +1,4 @@
-package program.captcha;
+package program.configuration.captcha;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;

@@ -1,8 +1,8 @@
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import { Field, Form, Formik, FormikProvider, useFormik } from "formik";
 import { ChangeEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ICategory } from "../ShowCategoriesPage/ShowCategoriesPage";
+import http from "../../../http_common";
 
 interface IAddCategoryDTO {
   name: string;
@@ -16,7 +16,7 @@ const AddCategoryPage = () => {
   const addItemToDb = (
     item: IAddCategoryDTO
   ): Promise<AxiosResponse<IAddCategoryDTO>> => {
-    return axios.post("http://localhost:8082/api/categories", item);
+    return http.post("api/categories", item);
   };
 
   const onFileChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {

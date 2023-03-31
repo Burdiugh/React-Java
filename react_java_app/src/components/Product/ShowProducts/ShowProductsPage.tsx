@@ -1,9 +1,8 @@
-import axios from "axios";
-import exp from "constants";
 import { useEffect, useState } from "react";
-import { InfinitySpin } from "react-loader-spinner";
+
 import { Link } from "react-router-dom";
-import http_common from "../../../http_common";
+import http from "../../../http_common";
+
 import EclipseWidget from "../../Common/Eclipse";
 import ModalDelete from "../../Common/Modal/delete";
 import { IProductItem } from "../types";
@@ -19,7 +18,7 @@ const ShowProductsPage = () => {
   const [load, setLoad] = useState(false);
 
   const handleDelete = (id: number | string | undefined) => {
-    http_common
+    http
       .delete(`api/products/${id}`)
       .then((response) => {
         setData(data.filter((x) => x.id !== id));
@@ -29,7 +28,7 @@ const ShowProductsPage = () => {
 
   useEffect(() => {
     setLoad(true);
-    http_common
+    http
       .get("api/products")
       .then((response) => {
         setData(response.data);

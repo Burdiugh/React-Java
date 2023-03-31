@@ -1,8 +1,8 @@
-import axios from "axios";
 import { ChangeEvent, useEffect, useState } from "react";
 import { FaTrash } from "react-icons/fa";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { APP_ENV } from "../../../env";
+
+import http from "../../../http_common";
 import { ICategoryItem } from "../../Category/types";
 
 import { IPorductEdit, IProductItem } from "../types";
@@ -26,23 +26,19 @@ const ProductEditPage = () => {
   const [categories, setCategories] = useState<Array<ICategoryItem>>([]);
 
   useEffect(() => {
-    axios
-      .get<Array<ICategoryItem>>(`http://localhost:8082/api/categories`)
-      .then((resp) => {
-        console.log("category resp", resp.data);
+    http.get<Array<ICategoryItem>>(`api/categories`).then((resp) => {
+      console.log("category resp", resp.data);
 
-        setCategories(resp.data);
-      });
+      setCategories(resp.data);
+    });
 
-    axios
-      .get<IProductItem>(`http://localhost:8082/api/products/${id}`)
-      .then((resp) => {
-        const { files, name, price, category_id, description } = resp.data;
-        setOldImages(files);
-        console.log("product", resp.data);
-        setModel({ ...model, name, price, description, category_id });
-        console.log("data", resp.data);
-      });
+    http.get<IProductItem>(`api/products/${id}`).then((resp) => {
+      const { files, name, price, category_id, description } = resp.data;
+      setOldImages(files);
+      console.log("product", resp.data);
+      setModel({ ...model, name, price, description, category_id });
+      console.log("data", resp.data);
+    });
   }, []);
 
   const content = categories.map((category) => (
@@ -74,13 +70,9 @@ const ProductEditPage = () => {
     try {
       console.log("model to server", model);
 
-      const result = await axios.put(
-        `http://localhost:8082/api/products/${id}`,
-        model,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
+      const result = await http.put(`api/products/${id}`, model, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
       navigator("/products");
     } catch (e: any) {}
   };

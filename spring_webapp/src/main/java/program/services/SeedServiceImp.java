@@ -44,6 +44,7 @@ public class SeedServiceImp implements SeedService {
                     .lastName("Burdiuh")
                     .email("burdiugh.bk@gmail.com")
                     .phone("097 075 75 45")
+                    .image(null)
                     .password(passwordEncoder.encode("edizas123"))
                     .build();
             userRepository.save(user);

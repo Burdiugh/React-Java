@@ -37,8 +37,10 @@ public class JwtService {
         return Jwts.builder()
                 .setSubject(format("%s,%s", user.getId(), user.getEmail()))
                 .claim("email", user.getEmail())
-                //.claim("image", user.getImage())
-                .claim("roles", roles.stream()                                      //витягується списочок ролей, які є у юзера
+                .claim("image", user.getImage())
+                .claim("firstName", user.getFirstName())
+                .claim("lastName", user.getLastName())
+                .claim("roles", roles.stream()//витягується списочок ролей, які є у юзера
                         .map((role) -> role.getRole().getName()).toArray(String []:: new))
                 .setIssuer(jwtIssuer) //записуємо хто власник токена
                 .setIssuedAt(new Date(System.currentTimeMillis()))  //коли був створений токен

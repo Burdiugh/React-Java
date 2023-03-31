@@ -3,13 +3,19 @@ import { useEffect } from "react";
 import { Form, Field, ErrorMessage, useFormik, FormikProvider } from "formik";
 
 import { Link, useNavigate } from "react-router-dom";
-import { ILogin } from "../types";
+import { AuthUserActionType, IAuthResponse, ILogin, IUser } from "../types";
 import * as Yup from "yup";
-import axios from "axios";
+
 import setAuthToken from "../../../helpers/setAuthToken";
-import http_common from "../../../http_common";
+
+import { useDispatch } from "react-redux";
+import jwtDecode from "jwt-decode";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import http from "../../../http_common";
 
 const LoginPage = () => {
+  const { executeRecaptcha } = useGoogleReCaptcha();
+
   const validationSchema = Yup.object().shape({
     email: Yup.string()
       .email("Invalid email address")
@@ -18,33 +24,43 @@ const LoginPage = () => {
       .required("Password is required")
       .min(6, "Password must be at least 6 characters"),
   });
-
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const onSubmitLogin = (values: ILogin) => {
+  const onSubmitLogin = async (values: ILogin) => {
     console.log("login values:", values);
 
-    http_common
-      .post("api/account/login", values)
+    if (!executeRecaptcha) return;
+
+    values.reCaptchaToken = await executeRecaptcha();
+
+    http
+      .post<IAuthResponse>("api/account/login", values)
       .then((data) => {
         var token = data.data.token;
         if (token) {
+          const user = jwtDecode(token) as IUser;
           console.log("token", token);
-          // axios.defaults.headers.common["Authorization"] = "Bearer " + token;
-          setAuthToken(token);
+          dispatch({
+            type: AuthUserActionType.LOGIN_USER,
+            payload: user,
+          });
 
-          localStorage.setItem("token", token);
+          //axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+          setAuthToken(token);
+          localStorage.token = token;
           navigate("/");
         }
       })
       .catch((errors) => {
-        console.log("Register errors", errors);
+        console.log("Login errors", errors);
       });
   };
 
   const initialValues: ILogin = {
     email: "",
     password: "",
+    reCaptchaToken: "",
   };
 
   const formik = useFormik({

@@ -1,7 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { APP_ENV } from "../../../env";
+
+import http from "../../../http_common";
 import { IProductItem } from "../types";
 
 const ShowProductPage = () => {
@@ -20,12 +21,10 @@ const ShowProductPage = () => {
   const productImages = model.files;
 
   useEffect(() => {
-    axios
-      .get<IProductItem>(`http://localhost:8082/api/products/${id}`)
-      .then((resp) => {
-        setModel(resp.data);
-        console.log(resp.data);
-      });
+    http.get<IProductItem>(`api/products/${id}`).then((resp) => {
+      setModel(resp.data);
+      console.log(resp.data);
+    });
   }, []);
 
   return (

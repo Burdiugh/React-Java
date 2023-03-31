@@ -1,7 +1,7 @@
-import axios, { AxiosResponse } from "axios";
 import { Field, FormikProvider, Form, useFormik, ErrorMessage } from "formik";
 import { Link, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
+import http from "../../../http_common";
 import { IRegister } from "../types";
 
 const initialValues: IRegister = {
@@ -17,7 +17,7 @@ const RegisterPage = () => {
   const onSubmit = (values: IRegister) => {
     console.log("Register values: ", values);
 
-    axios
+    http
       .post("http://localhost:8082/api/account/register", values)
       .then((data) => {
         var token = data.data.token;
