@@ -10,9 +10,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import program.configuration.captcha.CaptchaSettings;
 import program.dto.account.AuthResponseDTO;
+import program.dto.account.GoogleAuthDTO;
 import program.dto.account.LoginDTO;
 import program.dto.account.RegisterDTO;
 import program.services.AccountService;
+import program.services.GoogleAuthService;
+import program.services.InvalidTokenException;
+
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 
 @RestController
 @RequestMapping("api/account")
@@ -22,6 +28,13 @@ public class AccountController {
 
     private final CaptchaSettings captchaSettings;
 
+
+    @PostMapping("/google-auth")
+    public ResponseEntity<AuthResponseDTO> googleAuth(
+            @RequestBody GoogleAuthDTO request
+    ) throws InvalidTokenException, GeneralSecurityException, IOException {
+        return ResponseEntity.ok(service.googleAuth(request));
+    }
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponseDTO> register(

@@ -6,15 +6,7 @@ const initState: IAuthUser = {
 
 export const AuthReducer = (state = initState, action: any): IAuthUser => {
   switch (action.type) {
-    case AuthUserActionType.LOGIN_USER: {
-      const user: IUser = action.payload as IUser;
-      return {
-        ...state,
-        isAuth: true,
-        user: user,
-      };
-    }
-    case AuthUserActionType.REGISTER_USER: {
+    case AuthUserActionType.AUTH_USER: {
       const user: IUser = action.payload as IUser;
       return {
         ...state,

@@ -9,23 +9,14 @@ import jwtDecode from "jwt-decode";
 import { AuthUserActionType, IUser } from "./components/Auth/types";
 
 import http from "./http_common";
+import { LoginFromLocalStorage } from "./components/Auth/actions";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 
 if (localStorage.token) {
-  const { token } = localStorage;
-  const user = jwtDecode(token) as IUser;
-  store.dispatch({
-    type: AuthUserActionType.LOGIN_USER,
-    payload: {
-      email: user.email,
-      image: user.image,
-      phone: user.phone,
-    } as IUser,
-  });
-  http.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  LoginFromLocalStorage()(store.dispatch);
 }
 
 root.render(

@@ -6,12 +6,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthUserActionType, IAuthResponse, ILogin, IUser } from "../types";
 import * as Yup from "yup";
 
-import setAuthToken from "../../../helpers/setAuthToken";
-
 import { useDispatch } from "react-redux";
-import jwtDecode from "jwt-decode";
+
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
-import http from "../../../http_common";
+import { useActions } from "../../hook/useActions";
+import { log } from "console";
+import GoogleAuth from "../google/googleAuth";
 
 const LoginPage = () => {
   const { executeRecaptcha } = useGoogleReCaptcha();
@@ -26,6 +26,7 @@ const LoginPage = () => {
   });
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { LoginUser } = useActions();
 
   const onSubmitLogin = async (values: ILogin) => {
     console.log("login values:", values);
@@ -34,27 +35,9 @@ const LoginPage = () => {
 
     values.reCaptchaToken = await executeRecaptcha();
 
-    http
-      .post<IAuthResponse>("api/account/login", values)
-      .then((data) => {
-        var token = data.data.token;
-        if (token) {
-          const user = jwtDecode(token) as IUser;
-          console.log("token", token);
-          dispatch({
-            type: AuthUserActionType.LOGIN_USER,
-            payload: user,
-          });
+    await LoginUser(values);
 
-          //axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-          setAuthToken(token);
-          localStorage.token = token;
-          navigate("/");
-        }
-      })
-      .catch((errors) => {
-        console.log("Login errors", errors);
-      });
+    navigate("/");
   };
 
   const initialValues: ILogin = {
@@ -146,6 +129,9 @@ const LoginPage = () => {
                       >
                         Sign up
                       </Link>
+                    </div>
+                    <div>
+                      <GoogleAuth />
                     </div>
                   </div>
                 </div>

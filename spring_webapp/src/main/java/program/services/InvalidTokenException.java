@@ -1,2 +1,7 @@
-package program.services;public class InvalidTokenException {
+package program.services;
+
+public class InvalidTokenException extends Exception {
+    public InvalidTokenException(String message) {
+        super(message);
+    }
 }

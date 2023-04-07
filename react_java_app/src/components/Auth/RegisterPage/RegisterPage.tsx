@@ -2,34 +2,34 @@ import { Field, FormikProvider, Form, useFormik, ErrorMessage } from "formik";
 import { Link, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import http from "../../../http_common";
-import { IRegister } from "../types";
+import { IAuthResponse, IRegister } from "../types";
+import { APP_ENV } from "../../../env";
+import { useActions } from "../../hook/useActions";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 
 const initialValues: IRegister = {
   firstName: "",
   lastName: "",
   email: "",
   password: "",
+  reCaptchaToken: "",
 };
 
 const RegisterPage = () => {
+  const { executeRecaptcha } = useGoogleReCaptcha();
+  const { RegistrationUser } = useActions();
+
   const navigate = useNavigate();
 
-  const onSubmit = (values: IRegister) => {
+  const onSubmit = async (values: IRegister) => {
+    if (!executeRecaptcha) return;
+
+    values.reCaptchaToken = await executeRecaptcha();
     console.log("Register values: ", values);
 
-    http
-      .post("http://localhost:8082/api/account/register", values)
-      .then((data) => {
-        var token = data.data.token;
-        if (token) {
-          console.log("token", token);
-          localStorage.setItem("token", token);
-          navigate("/");
-        }
-      })
-      .catch((errors) => {
-        console.log("Register errors", errors);
-      });
+    RegistrationUser(values);
+
+    navigate("/");
   };
 
   const validationSchema = Yup.object().shape({
@@ -109,7 +109,7 @@ const RegisterPage = () => {
                   <Field
                     id="password"
                     name="password"
-                    type="text"
+                    type="password"
                     className="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full"
                   />
                   <ErrorMessage name="password" />

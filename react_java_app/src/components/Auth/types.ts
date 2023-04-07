@@ -9,6 +9,7 @@ export interface IAuthResponse{
 }
 
 export interface IRegister{
+  reCaptchaToken: any;
     firstName:string,
   lastName:string
   email:string,
@@ -24,13 +25,30 @@ export interface IRegister{
     roles: string[],
   }
 
+  export interface IGoogleAuthUser {
+    token: string;
+  }
+
   export interface IAuthUser{
     isAuth: boolean,
     user?:IUser
   }
 
   export enum AuthUserActionType{
-    LOGIN_USER= "AUTH_LOGIN_USER",
+    AUTH_USER= "AUTH_LOGIN_USER",
     LOGOUT_USER ="AUTH_LOGOUT_USER",
-    REGISTER_USER ="AUTH_REGISTER_USER",
   }
+
+  export interface AuthUserAction {
+    type: AuthUserActionType.AUTH_USER;
+    payload: IUser;
+  }
+  
+
+  export interface LogOutUserAction {
+    type: AuthUserActionType.LOGOUT_USER;
+  }
+
+
+
+  export type UserActions = AuthUserAction | LogOutUserAction;
